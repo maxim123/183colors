@@ -8,7 +8,7 @@ export default class CoolPicsInput extends React.Component {
         const {r, g, b} = tinycolor(this.props.color).toRgb();
 
         this.state = {
-            inputValue: "[" + r + ", " + g + ", " + b + "]"
+            inputValue: "" + r + " " + g + " " + b
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -19,7 +19,7 @@ export default class CoolPicsInput extends React.Component {
         if (this.props.color !== prevProps.color) {
             const {r, g, b} = tinycolor(this.props.color).toRgb();
             this.setState({
-                inputValue: "[" + r + ", " + g + ", " + b + "]",
+                inputValue: "" + r + " " + g + " " + b,
                 invalidInput: false
             });
         }
@@ -52,12 +52,10 @@ export default class CoolPicsInput extends React.Component {
             }
         }
 
-        // remove [ ]
-        const triple = input.replace(/[\[\]]/g, '');
-        const components = triple.split(",").map(component => component.trim());
-        if ((input.charAt(0) !== "[") ||
-            (input.charAt(input.length - 1) !== "]") ||
-            (components.length !== 3) ||
+        // trim surrounding whitespace
+        const triple = input.trim();
+        const components = triple.split(/\s+/).map(component => parseInt(component));
+        if ((components.length !== 3) ||
             (!components.every(isValidRGBComponent))) {
             return { error: true };
         } else {
